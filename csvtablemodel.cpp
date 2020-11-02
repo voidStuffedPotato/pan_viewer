@@ -134,15 +134,10 @@ bool CSVTableModel::removeRows(int row, int count, const QModelIndex &parent)
     for (int i = row; i != table.size(); ++i)
         copy.remove(i);
 
-    qDebug() << QString("table size before:%1").arg(table.size());
-    qDebug() << "I am here";
-
     for (int i = row + count, j = row; i < table.size(); ++i, ++j) {
         copy[j] = table[i];
     }
     table = copy;
-
-    qDebug() << QString("table size before:%1").arg(table.size());
 
     endRemoveRows();
     return true;
