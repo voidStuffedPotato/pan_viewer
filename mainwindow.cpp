@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     model = new CSVTableModel(this);
     ui->tableView->setModel(model);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 MainWindow::~MainWindow()
@@ -32,17 +33,17 @@ void MainWindow::on_drop_row_clicked()
      * O(m) for deletions from the end
      */
     auto list = ui->tableView->selectionModel()->selectedRows();
-    while (!list.empty()) {
-        auto index = list.at(0);
-        model->removeRows(index.row(), 1);
-        list = ui->tableView->selectionModel()->selectedRows();
+    int num = list.count() - 1;
+    while (num >= 0) {
+        model->removeRows(list.at(num).row(), 1);
+        -- num;
     }
 }
 
 void MainWindow::on_dump_btn_clicked()
 {
-    auto current_file = QFileDialog::getOpenFileName(this,
-        tr(u8"Выберите файл"), "", tr("*.csv"));
+    auto current_file = QFileDialog::getSaveFileName(this,
+        tr(u8"Выберите файл"), "", tr("All files (*)"));
     if (!current_file.isEmpty())
         model->dumpToFile(current_file);
 }
