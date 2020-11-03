@@ -1,3 +1,4 @@
+#include <QDataStream>
 #include <QFile>
 #include "csvtablemodel.hpp"
 
@@ -157,17 +158,17 @@ bool CSVTableModel::loadFromFile(const QString &filename)
 {
     QFile file(filename);
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QIODevice::ReadOnly))
         return false;
 
+    emit layoutAboutToBeChanged();
     table.clear();
-
-    QTextStream in(&file);
+    QDataStream in(&file);
+    QString line;
     for (int i = 0; !in.atEnd(); ++i) {
-        QString line = in.readLine();
+        in >> line;
         table[i] = Person::fromCSV(line);
     }
-    emit layoutAboutToBeChanged();
     emit layoutChanged();
     return true;
 }
@@ -175,14 +176,14 @@ bool CSVTableModel::loadFromFile(const QString &filename)
 bool CSVTableModel::dumpToFile(const QString &filename)
 {
     QFile file(filename);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly))
         return false;
-    QTextStream out(&file);
+    QDataStream out(&file);
 
     QHashIterator<int, Person> it(table);
     while (it.hasNext()) {
         it.next();
-        out << it.value().toCSV() << '\n';
+        out << it.value().toCSV();
     }
     return true;
 }

@@ -43,7 +43,7 @@ void MainWindow::on_drop_row_clicked()
 void MainWindow::on_dump_btn_clicked()
 {
     auto current_file = QFileDialog::getSaveFileName(this,
-        tr(u8"Выберите файл"), "", tr("All files (*)"));
+        tr(u8"Выберите файл"), QDir::homePath(), tr("All files (*)"));
     if (!current_file.isEmpty())
         model->dumpToFile(current_file);
 }
@@ -51,7 +51,7 @@ void MainWindow::on_dump_btn_clicked()
 void MainWindow::on_load_btn_clicked()
 {
     auto current_file = QFileDialog::getOpenFileName(this,
-        tr(u8"Выберите файл"), "", tr("*.csv"));
+        tr(u8"Выберите файл"), QDir::homePath(), tr("*.dat"));
     if (!current_file.isEmpty())
         model->loadFromFile(current_file);
 }
